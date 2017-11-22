@@ -3,13 +3,13 @@ import abc
 
 class Place:
 #    __metaclass__ = abc.ABCMeta # never going to have an instance of just Place
-    def __init__(self):
-        self.NORTH = None # you can't go north from nowhere
-        self.EAST = None # all of these are individually declared instead of
-        self.SOUTH = None # generated or read because the map won't change
-        self.WEST = None # do i need to put self in front of these?
-        self.UP = None
-        self.DOWN = None
+    def __init__(self, locnorth, loceast, locsouth, locwest, locup, locdown):
+        self.NORTH = locnorth # you can't go north from nowhere
+        self.EAST = loceast # all of these are individually declared instead of
+        self.SOUTH = locsouth # generated or read because the map won't change
+        self.WEST = locwest # do i need to put self in front of these?
+        self.UP = locup
+        self.DOWN = locdown
         self.location = None
         self.movement = None
         self.blurb = None
@@ -25,38 +25,37 @@ class Place:
               "\n" + "Down = " + str(self.DOWN))
     def move_input(self):
         go = input()
-        if go == "go north" and self.NORTH == True:
+        if go == "go north" and self.NORTH is not None:
             self.movement = "move north"
-        elif go == "go east" and self.EAST == True:
+        elif go == "go east" and self.EAST is not None:
             self.movement = "move east"
-        elif go == "go south" and self.SOUTH == True:
+        elif go == "go south" and self.SOUTH is not None:
             self.movement = "move south"
-        elif go == "go west" and self.WEST == True:
+        elif go == "go west" and self.WEST is not None:
             self.movement = "move west"
-        elif go == "go up" and self.UP == True:
+        elif go == "go up" and self.UP is not None:
             self.movement = "move up"
-        elif go == "go down" and self.DOWN == True:
+        elif go == "go down" and self.DOWN is not None:
             self.movement = "move down"
         else:
             print("You can't go that way.")
         if self.movement == "move " + "north" or "east" or "south" or "west" or "up" or "down":
             print(self.movement)
-            ask = False
         # how do i go through self.ways and figure out where i can go
         # without all this repetitive code?
     def change_location(self):
         if self.movement == "move north":
-            pass
+            self.location = self.NORTH
         elif self.movement == "move east":
-            pass
+            self.location = self.EAST
         elif self.movement == "move south":
-            pass
+            self.location = self.SOUTH
         elif self.movement == "move west":
-            pass
+            self.location = self.WEST
         elif self.movement == "move up":
-            pass
+            self.location = self.UP
         elif self.movement == "move down":
-            pass
+            self.location = self.DOWN
         print(self.location)
         # how do i make this less repetitive? it's kind of all placeholder code
         # does it even need to exist?
@@ -108,21 +107,16 @@ class Place:
 #        print(self.location)
 
 if __name__ == "__main__":
-    field = Place()
-    cave = Place()
-    field.NORTH = True
-    field.EAST = True
-    field.WEST = True
+    game = True
+    field = Place("cave", "river one", None, "forest one", None, None)
+    cave = Place(None, None, "field", None, "ledge", None)
+#    field.NORTH = True
+#    field.EAST = True
+#    field.WEST = True
     field.location = "field"
     field.blurb = "You stand in a large field with a forest to the west, a river to the east, and a cave to the north."
-    if field.movement == "move north": # you can go north to the cave
-        field.location = "cave"
-    elif field.movement == "move east": # you can go east to the river
-        field.location = "river one"
-    elif field.movement == "move west": # you can go west to the forest
-        field.location = "forest one"
-    cave.SOUTH = True
-    cave.UP = True
+#    cave.SOUTH = True
+#    cave.UP = True
     cave.location = "cave"
     cave.blurb = "You stand at the mouth of a dark cave. There is an unlit torch on the ground. It looks like you can climb to a ledge above."
     if cave.movement == "move south": # you can go south to the field
@@ -132,20 +126,34 @@ if __name__ == "__main__":
     field.dir_check() # debug only
     field.description()
     field.move_input()
-    field.change_location()
-    if field.location == "cave":
-        cave.dir_check() # debug only
-        cave.description()
-        cave.move_input()
-        cave.change_location()
-    if field.location == "river one":
-        print("haven't made the river yet")
-    if field.location == "forest one":
-        print("haven't made the forest yet")
-    if cave.location == "field":
-        field.dir_check() # debug only
-        field.description()
-        field.move_input()
-        field.change_location()
-    if cave.location == "ledge":
-        print("haven't made the ledge yet")
+    while game == True:
+        if field.movement == "move north": # you can go north to the cave
+            field.location = "cave"
+        elif field.movement == "move east": # you can go east to the river
+            field.location = "river one"
+        elif field.movement == "move west": # you can go west to the forest
+            field.location = "forest one"
+        if cave.movement == "move south": # you can go south to the field
+            cave.location = "field"
+        elif cave.movement == "move up": # you can climb up to the ledge
+            cave.location = "ledge"
+        print("field.location is " + str(field.location))
+        if field.location == "cave":
+            cave.dir_check() # debug only
+            cave.description()
+            cave.move_input()
+            cave.change_location()
+        if field.location == "river one":
+            print("haven't made the river yet")
+            break
+        if field.location == "forest one":
+            print("haven't made the forest yet")
+            break
+        if cave.location == "field":
+            field.dir_check() # debug only
+            field.description()
+            field.move_input()
+            field.change_location()
+        if cave.location == "ledge":
+            print("haven't made the ledge yet")
+            break
