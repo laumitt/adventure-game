@@ -1,4 +1,3 @@
-# improved by Laurel, Maya, and Peter
 import abc
 
 class Place:
