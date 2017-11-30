@@ -10,7 +10,6 @@ class Place:
         self.blurb = None
     def description(self): # to describe each location and by extension
         print(self.blurb) # give the player possible directions
-        print("You have " + str(player.inventory)) # show the player what they have
     def dir_check(self): # debug only
         print("You can go " +
               "\n" + "North = " + str(self.NORTH) +
@@ -32,7 +31,7 @@ class Place:
             player.location = self.UP
         elif player.movement == 6:
             player.location = self.DOWN
-        elif player.movement == 0: # part of the loop break mechanism
+        elif player.movement == "stop": # part of the loop break mechanism
             player.location = "stop"
         # print(player.location) # debug only
 
@@ -44,7 +43,7 @@ class Player:
     def action_input(self): # Player knows where to move
         while True:
             action = input()
-            if str(action) == "go " + "north" or "east" or "south" or "west" or "up" or "down":
+            if str(action) in ["go north", "go east", "go south", "go west", "go up", "go down"]:
                 if action == "go north":
                     self.movement = 1
                     break
@@ -64,14 +63,15 @@ class Player:
                     self.movement = 6
                     break
             elif str(action) == "stop": # to break the loop
-                self.movement = 0 # special symbol for breaking the loop
+                self.movement = "stop" # special symbol for breaking the loop
                 break
-            elif str(action) == "pick up torch": # this part isn't working
+            elif str(action) == "pick up torch":
                 self.inventory.append("torch")
                 print("You gingerly pick up the torch and wonder how it got there.")
-                print("You have " + str(self.inventory))
             elif str(action) == "light torch" and self.inventory.count("torch") >= 1:
                 print("You try to light the torch but realize you forgot a lighter.")
+            else:
+                print("You realize you are spouting gibberish into thin air.")
 
 if __name__ == "__main__":
     player = Player()
@@ -85,36 +85,60 @@ if __name__ == "__main__":
     forestone.blurb = "The forest is peaceful but empty. You can't see anything interesting but the field to the east."
     ledge = Place(None, None, None, None, None, "cave", player)
     ledge.blurb = "The ledge is dark and empty. You can't see anything interesting but the cave below."
+    locs = {"ledge" : ledge,
+            "cave" : cave,
+            "field" : field,
+            "river one": riverone,
+            "forest one" : forestone}
     print("Movement commands are go + north/south/east/west/up/down. All lowercase please. To exit, type stop." + '\n')
-    player.location = field # start in field but stay in while loop later
-    field.description() # would also put inventory here later
-    player.action_input()
-    field.change_location(player)
+    player.location = "field"
     while True:
-        if player.location == "cave":
-            cave.description()
-            #cave.dir_check()
+        if player.location == "stop":
+            break
+        if player.location == None:
+            print("You stumble into an invisible wall and realize you can't go that way.")
+        locs[player.location].description()
+        current = player.location
+        player.location = None
+        while player.location == None:
             player.action_input()
-            cave.change_location(player)
-        elif player.location == "ledge":
-            ledge.description()
-            #ledge.dir_check()
-            player.action_input()
-            ledge.change_location(player)
-        elif player.location == "river one":
-            riverone.description()
-            #riverone.dir_check()
-            player.action_input()
-            riverone.change_location(player)
-        elif player.location == "forest one":
-            forestone.description()
-            #forestone.dir_check()
-            player.action_input()
-            forestone.change_location(player)
-        elif player.location == "field":
-            field.description()
-            #field.dir_check()
-            player.action_input()
-            field.change_location(player)
-        elif player.location == "stop":
-            break # because breaks can't be outside of loops
+            locs[current].change_location(player)
+            if player.location == None:
+                print("You stumble into an invisible wall and realize you can't go that way.")
+#        if player.location == "cave":
+#            cave.description()
+#            cave.dir_check()
+#            player.location = None
+#            while player.location == None:
+#                player.action_input()
+#                cave.change_location(player)
+#        elif player.location == "ledge":
+#            ledge.description()
+#            ledge.dir_check()
+#            player.location = None
+#            while player.location == None:
+#                player.action_input()
+#                ledge.change_location(player)
+#        elif player.location == "river one":
+#            riverone.description()
+#            riverone.dir_check()
+#            player.location = None
+#            while player.location == None:
+#                player.action_input()
+#                riverone.change_location(player)
+#        elif player.location == "forest one":
+#            forestone.description()
+#            forestone.dir_check()
+#            player.location = None
+#            while player.location == None:
+#                player.action_input()
+#                forestone.change_location(player)
+#        elif player.location == "field":
+#            field.description()
+#            field.dir_check()
+#            player.location = None
+#            while player.location == None:
+#                player.action_input()
+#                field.change_location(player)
+#        elif player.location == "stop":
+#            break # because breaks can't be outside of loops
