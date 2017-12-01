@@ -10,7 +10,7 @@ class Place:
         self.blurb = None
     def description(self): # to describe each location and by extension
         print(self.blurb) # give the player possible directions
-    def dir_check(self): # debug only
+    def dir_check(self): # debug only - doesn't actually run in __main__
         print("You can go " +
               "\n" + "North = " + str(self.NORTH) +
               "\n" + "East = " + str(self.EAST) +
@@ -19,9 +19,9 @@ class Place:
               "\n" + "Up = " + str(self.UP) +
               "\n" + "Down = " + str(self.DOWN))
     def change_location(self, player): # Place knows where Player ends up if
-        if player.movement == 1: # they move a certain direction
+        if player.movement == 1:       # they move a certain direction
             player.location = self.NORTH
-        elif player.movement == 2: # the movement can't break until later
+        elif player.movement == 2:
             player.location = self.EAST
         elif player.movement == 3:
             player.location = self.SOUTH
@@ -35,12 +35,12 @@ class Place:
             player.location = "stop"
 
 class Player:
-    def __init__(self): # where they are, where they want to go, and what they have
+    def __init__(self): # where they want to go, where they are, and what they have
         self.movement = None
         self.location = None
         self.inventory = []
-    def action_input(self): # Player knows where to move
-        while True:
+    def action_input(self): # Player knows where to move but doesn't know where
+        while True:         # that movement will take them
             action = input()
             if str(action) in ["go north", "go east", "go south", "go west", "go up", "go down"]:
                 if action == "go north":
@@ -74,6 +74,7 @@ class Player:
 
 if __name__ == "__main__":
     player = Player()
+    # initiation (map location) of locations and descriptions
     field = Place("cave", "river one", None, "forest one", None, None, player)
     field.blurb = "You stand in a large field with a forest to the west, a river to the east, and a cave to the north."
     cave = Place(None, None, "field", None, "ledge", None, player)
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     hill.blurb = "The majestic hill looks over the forest to the south and west."
     forestthree = Place("hill", None, "forest path", None, None, None, player)
     forestthree.blurb = "To the north, a hill rises. To the south, a path runs through the forest."
-    locs = {"field" : field,
+    locs = {"field" : field, # dictionary of locations and objects
             "cave" : cave,
             "river one" : riverone,
             "forest one" : forestone,
@@ -113,6 +114,7 @@ if __name__ == "__main__":
             "river two" : rivertwo,
             "hill" : hill,
             "forest three" : forestthree}
+    # basic setup instructions, to run once
     print("Movement commands are go + north/south/east/west/up/down. All lowercase please. To exit, type stop." + '\n')
     player.location = "field" # start in the field
     while True:
@@ -126,5 +128,5 @@ if __name__ == "__main__":
         while player.location == None:
             player.action_input()
             locs[current].change_location(player)
-            if player.location == None:
+            if player.location == None: # if they go somewhere they can't
                 print("You stumble into an invisible wall and realize you can't go that way.")
