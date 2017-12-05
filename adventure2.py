@@ -1,6 +1,4 @@
 # to do list
-# remove items when they get dropped (rock + torch)
-# drop gem
 # storyline
 
 class Place:
@@ -17,30 +15,32 @@ class Place:
     def description(self):
     # to describe each location and by extension give player possible directions
         print(self.blurb)
-    def dir_check(self): # debug only - doesn't actually run in __main__
-        print("You can go " +
-              "\n" + "North = " + str(self.NORTH) +
-              "\n" + "East = " + str(self.EAST) +
-              "\n" + "South = " + str(self.SOUTH) +
-              "\n" + "West = " + str(self.WEST) +
-              "\n" + "Up = " + str(self.UP) +
-              "\n" + "Down = " + str(self.DOWN))
-    def change_location(self, player):
-    # Place knows where Player ends up if they move a certain direction
-        if player.movement == 1:
-            player.location = self.NORTH
-        elif player.movement == 2:
-            player.location = self.EAST
-        elif player.movement == 3:
-            player.location = self.SOUTH
-        elif player.movement == 4:
-            player.location = self.WEST
-        elif player.movement == 5:
-            player.location = self.UP
-        elif player.movement == 6:
-            player.location = self.DOWN
-        elif player.movement == "stop": # part of the loop break mechanism
-            player.location = "stop"
+#    def dir_check(self): # debug only - doesn't actually run in __main__
+#        print("You can go " +
+#              "\n" + "North = " + str(self.NORTH) +
+#              "\n" + "East = " + str(self.EAST) +
+#              "\n" + "South = " + str(self.SOUTH) +
+#              "\n" + "West = " + str(self.WEST) +
+#              "\n" + "Up = " + str(self.UP) +
+#              "\n" + "Down = " + str(self.DOWN))
+    def get_location(self, movement):
+    # tell Player where they'd end up after moving a certain way
+        if movement == 1:
+            return self.NORTH
+        elif movement == 2:
+            return self.EAST
+        elif movement == 3:
+            return self.SOUTH
+        elif movement == 4:
+            return self.WEST
+        elif movement == 5:
+            return self.UP
+        elif movement == 6:
+            return self.DOWN
+        elif movement == "stop": # part of the loop break mechanism
+            return "stop"
+        elif movement == 9:
+            return "forest path"
 
 class Inventory:
     def __init__(self):
@@ -60,44 +60,37 @@ class Player:
         self.location = None
         self.inventory = []
         self.gateopen = False
+        self.actions = {"go north" : 1,
+                        "go east" : 2,
+                        "go south" : 3,
+                        "go west" : 4,
+                        "go up" : 5,
+                        "go down" : 6,
+                        "stop" : "stop"}
     def action_input(self):
     # Player knows where to move but doesn't know where that movement will take them
         while True:
             action = input()
             if str(action) in ["go north", "go east", "go south", "go west", "go up", "go down"]:
-                if action == "go north":
-                    self.movement = 1
-                    break
-                elif action == "go east":
-                    self.movement = 2
-                    break
-                elif action == "go south":
-                    self.movement = 3
-                    break
-                elif action == "go west":
-                    self.movement = 4
-                    break
-                elif action == "go up":
+                self.movement = self.actions[action]
+                if action == "go up":
                     if current == "forest path":
                         if self.gateopen == True:
                             self.movement = 5
                         else:
                             print("The gate isn't open yet.")
-                            self.movement = 0
-                            self.location = "forest path"
+                            self.movement = 9
+                            break
                     else:
-                        self.movement = 5
-                    break
-                elif action == "go down":
-                    self.movement = 6
-                    break
+                        break
+                break
             elif str(action) == "stop": # to break the loop
                 self.movement = "stop"
                 break
             # beginning of non-movement actions
             elif str(action) == "pick up torch":
                 if current == "cave":
-                    inventory.inventory_add("torch") # doesn't actually stop appending torches
+                    inventory.inventory_add("torch")
                     print("You gingerly pick up the torch and wonder how it got there.")
                 else:
                     print("What torch?")
@@ -158,8 +151,17 @@ class Player:
                     print("You admire the sparkling facets of the gem and slip it into your pocket.")
                 else:
                     print("What gem?")
+            elif str(action) == "drop gem":
+                inventory.inventory_check("gem")
+                if inventory.check == True:
+                    print("The gem sparkles as it falls.")
+                else:
+                    print("What gem?")
             else: # if they make a typo or say something else
                 print("You realize you are spouting gibberish into thin air.")
+    def change_location(self, location):
+    # set location to what Place said
+        self.location = location
 
 if __name__ == "__main__":
     player = Player()
@@ -216,6 +218,6 @@ if __name__ == "__main__":
         player.location = None # to run while loop
         while player.location == None:
             player.action_input()
-            locs[current].change_location(player)
+            player.change_location(locs[current].get_location(player.movement))
             if player.location == None: # if they go somewhere they can't
                 print("You stumble into an invisible wall and realize you can't go that way.")

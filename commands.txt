@@ -1,0 +1,18 @@
+Possible Commands
+go north
+go east
+go south
+go west
+go up
+go down
+pick up torch
+light torch
+drop torch
+pick up rock
+inspect rock
+drop rock
+move leaves
+pick up key
+unlock gate
+pick up gem
+drop gem
