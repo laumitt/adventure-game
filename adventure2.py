@@ -3,7 +3,7 @@
 
 class Place:
     def __init__(self, locnorth, loceast, locsouth, locwest, locup, locdown, player):
-    # so that each place can define its own surroundigns but run off one class
+    # so that each place can define its own surroundings but run off one class
         self.NORTH = locnorth
         self.EAST = loceast
         self.SOUTH = locsouth
