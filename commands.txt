@@ -16,3 +16,4 @@ pick up key
 unlock gate
 pick up gem
 drop gem
+stop
