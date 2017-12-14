@@ -17,3 +17,15 @@ unlock gate
 pick up gem
 drop gem
 stop
+pick up sword
+drop sword
+pick up scroll
+read scroll
+drop scroll
+hit troll
+xyzzy
+pick up crown
+present crown
+pick up flowers
+drop flowers
+present flowers
