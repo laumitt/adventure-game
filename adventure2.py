@@ -1,6 +1,6 @@
 # to do list
-# playtest
-# rewrite descriptions
+# playtest more
+# fix troll hitting
 
 class Place:
     def __init__(self, locnorth, loceast, locsouth, locwest, locup, locdown, player):
@@ -37,10 +37,16 @@ class Place:
                 return "forest path"
             elif current == "cave":
                 return "lit ledge"
-            elif current == "canyon":
-                return "rainbow"
             elif current == "ledge":
                 return "lit ledge"
+            elif current == "canyon":
+                return "rainbow"
+            elif current == "clearing two":
+                return "forest four"
+            elif current == "troll forest":
+                return "forest four"
+        elif movement == 0: # if you don't move
+            return current
 
 class Inventory:
     def __init__(self):
@@ -49,10 +55,13 @@ class Inventory:
     def inventory_add(self, item):
         self.have.append(item)
     def inventory_check(self, item):
-        if self.have.count(item) >= 1:
+        if self.have.count(item) == 1 or self.have.count(item) > 1:
             self.check = True
 
 class Actions:
+    def __init__(self):
+        self.game_over = False
+        self.trolldead = False
     def get_torch(self, current, inventory):
         print(current)
         if current == "cave":
@@ -61,7 +70,7 @@ class Actions:
         else:
             print("What torch?")
     def light_torch(self, current, inventory):
-        inventory.inventory_check("torch")
+        inventory.inventory_check("torch") # doesn't work?
         if inventory.check == True:
             print("The warm light of the torch flickers over your surroundings.")
             player.torchlit = True
@@ -80,7 +89,7 @@ class Actions:
         else:
             print("What rock?")
     def look_rock(self, current, inventory):
-        inventory.inventory_check("rock")
+        inventory.inventory_check("rock") # doesn't work?
         if inventory.check == True:
             print("You look as hard as you can but can't see anything special about the rock.")
         else:
@@ -121,7 +130,7 @@ class Actions:
     def get_crown(self, current, inventory):
         if current == "up tree":
             inventory.inventory_add("crown")
-            print("You admire the sparkling facets of the crown and wear it or something.")
+            print("You admire the sparkling facets of the crown and put it in your pack.")
         else:
             print("What crown?")
     def drop_crown(self, current, inventory):
@@ -133,7 +142,8 @@ class Actions:
     def present_crown(self, current, inventory):
         inventory.inventory_check("crown")
         if inventory.check == True:
-            print("The queen smiles or something.")
+            print("The queen smiles and thanks you. Her guard offers you a pouch with your reward as she dubs you Knight of the Realm.")
+            self.game_over = True
         else:
             print("What crown?")
     def get_sword(self, current, inventory):
@@ -157,22 +167,39 @@ class Actions:
     def read_scroll(self, current, inventory):
         inventory.inventory_check("scroll")
         if inventory.check == True:
-            print("scroll.")
+            print('\n' +
+                  "PROCLAMATION" +
+                  '\n' +
+                  "BY ORDER OF THE QUEEN" +
+                  '\n' + '\n' +
+                  "The Queen's crown has been stolen. Any hero who wishes to venture forth and return it to Her Majesty will receive a" +
+                  '\n' +
+                  "§100,000"
+                  '\n' +
+                  "REWARD" +
+                  '\n' +
+                  "and be named Knight of the Realm." +
+                  '\n')
         else:
             print("What scroll?")
     def drop_scroll(self, current, inventory):
-        inventory.inventory_check("scroll")
+        inventory.inventory_check("scroll") # doesn't work?
         if inventory.check == True:
             print("The scroll flutters to the ground.")
         else:
             print("What scroll?")
     def hit_troll(self, current, inventory):
-        if current == "forest four":
-            inventory.inventory_check("sword")
-            if inventory.check == True:
-                print("hit troll.")
-            else:
-                print("What troll?")
+        inventory.inventory_check("sword")
+        if inventory.check == True:
+            if self.trolldead == False:
+                print("The troll collapses on the side of the path.")
+                player.current = "forest four"
+                self.trolldead = True
+            elif self.trolldead == True:
+                print("The troll is already dead.")
+        else:
+            print("Unfortunately, you have no weapons.")
+            player.current = "troll forest"
     def get_gem(self, current, inventory):
         if current == "forest six":
             inventory.inventory_add("gem")
@@ -200,7 +227,7 @@ class Actions:
     def present_flowers(self, current, inventory):
         inventory.inventory_check("flowers")
         if inventory.check == True:
-            print("The queen is happy.")
+            print("The queen smiles.")
         else:
             print("What flowers?")
 
@@ -213,6 +240,8 @@ class Player:
         self.gateopen = False
         self.torchlit = False
         self.magical = False
+        self.triedtroll = False
+        self.trolldead = True
         self.moves = {"go north" : 1,
                         "go east" : 2,
                         "go south" : 3,
@@ -221,7 +250,7 @@ class Player:
                         "go down" : 6,
                         "stop" : "stop"}
         # dictionary of non-movement actions linked to methods in Actions
-        # light torch is special and different
+        # light torch, xyzzy, hit troll, and stop are special and different
         self.action_list = {"pick up torch" : lambda current:actions.get_torch(current, inventory),
                             "drop torch" : lambda current:actions.drop_torch(current, inventory),
                             "pick up rock" : lambda current:actions.get_rock(current, inventory),
@@ -238,7 +267,6 @@ class Player:
                             "pick up scroll" : lambda current:actions.get_scroll(current, inventory),
                             "read scroll" : lambda current:actions.read_scroll(current, inventory),
                             "drop scroll" : lambda current:actions.drop_scroll(current, inventory),
-                            "hit troll" : lambda current:actions.hit_troll(current, inventory),
                             "pick up gem" : lambda current:actions.get_gem(current, inventory),
                             "drop gem" : lambda current:actions.drop_gem(current, inventory),
                             "pick up flowers" : lambda current:actions.get_flowers(current, inventory),
@@ -277,6 +305,19 @@ class Player:
                             break
                     else:
                         break
+                elif action == "go south":
+                    if current == "clearing two":
+                        if actions.trolldead == True:
+                            self.movement = 9
+                            break
+                        else:
+                            self.movement = 3
+                            break
+                    elif current == "troll forest":
+                        if actions.trolldead == False:
+                            self.movement = 0
+                    else:
+                        break
                 else:
                     break
             elif str(action) in self.action_list:
@@ -293,6 +334,13 @@ class Player:
                     print("You begin to glow faintly with a magical aura.")
                 else:
                     print("A hollow voice says 'Cretin'")
+            elif str(action) == "hit troll":
+                if current == "troll forest":
+                    actions.hit_troll(current, inventory)
+                    self.movement = 9
+                    break
+                else:
+                    print("What troll?")
             elif str(action) == "stop": # to break the loop
                 self.movement = "stop"
                 break
@@ -309,7 +357,7 @@ if __name__ == "__main__":
     player = Player(actions, current, inventory)
     # initiation (map location) of locations and descriptions
     field = Place("cave", "river one", None, "forest one", None, None, player)
-    field.blurb = "You stand in a large field with a forest to the west, a river to the east, and a cave to the north."
+    field.blurb = "You stand in a large field with a forest to the west, a river to the east, and a cave to the north. There is a bouquet of flowers lying at your feet."
     cave = Place(None, None, "field", None, "ledge", None, player)
     cave.blurb = "You stand at the mouth of a dark cave. There is an unlit torch and an old scroll on the ground. It looks like you can climb to a ledge above."
     riverone = Place(None, None, "ford", "field", None, None, player)
@@ -329,29 +377,33 @@ if __name__ == "__main__":
     uptree = Place(None, None, None, None, None, "forest path", player)
     uptree.blurb = "You find a beautiful view and a beautiful crown. The branches form a perfect ladder down to the path."
     rivertwo = Place("ford", None, "cliff", None, None, None, player)
-    rivertwo.blurb = "To the south, the river runs over an impassable waterfall. The ford crosses to the north."
-    hill = Place(None, None, "forest one", "forest three", None, None, player)
-    hill.blurb = "You stand halfway up the majestic hill, looking over the forest to the south and west."
+    rivertwo.blurb = "To the south, the river runs over a waterfall. The ford crosses to the north."
+    hill = Place(None, "forest three", "forest one", None, None, None, player)
+    hill.blurb = "You stand halfway up the majestic hill, looking over the forest to the south and east."
     forestthree = Place("hill", "clearing two", "forest path", None, None, None, player)
-    forestthree.blurb = "To the north, a hill rises. To the south, a path runs through the forest."
+    forestthree.blurb = "To the north, a hill rises. To the south, a path runs through the forest. To the east, a clearing appears through the trees."
     litledge = Place(None, None, None, None, None, "cave", player)
     litledge.blurb = "The torch shines around the ledge, revealing a gleaming antique sword."
     cliff = Place(None, None, None, None, "river two", "canyon", player)
-    cliff.blurb = "cliff."
+    cliff.blurb = "You stand at the edge of the cliff. A narrow path runs down the cliff face next to the waterfall."
     canyon = Place(None, None, None, None, "cliff", None, player)
-    canyon.blurb = "canyon."
+    canyon.blurb = "The river runs off down the canyon, which is too narrow for you to get through."
+    magiccanyon = Place(None, None, None, None, "cliff", None, player)
+    magiccanyon.blurb = "The river runs off down the canyon, which is too narrow for you to get through. A rainbow arcs off to the west."
     rainbow = Place(None, "canyon", None, None, None, None, player)
-    rainbow.blurb = "rainbow."
-    clearingtwo = Place(None, "forest five", "forest four", "forest three", None, None, player)
-    clearingtwo.blurb = "clearing two."
-    forestfour = Place("clearing two", None, "forest six", None, None, "cave", player)
-    forestfour.blurb = "forest four."
+    rainbow.blurb = "You step onto the shimmering rainbow and float in a cloud of colors. You can still see the canyon bottom to the east."
+    clearingtwo = Place(None, "forest five", "troll forest", "forest three", None, None, player)
+    clearingtwo.blurb = "The clearing is empty. Forest surrounds it to the east, south, and west."
+    forestfour = Place("clearing two", None, "forest six", None, None, None, player)
+    forestfour.blurb = "The forest is peaceful. It continues to the north and south."
+    trollforestfour = Place("clearing two", None, "forest six", None, None, None, player)
+    trollforestfour.blurb = "A large troll stands in your way."
     forestfive = Place("castle", None, None, "clearing two", None, None, player)
-    forestfive.blurb = "forest five."
+    forestfive.blurb = "The forest is quiet. To the north stands a majestic castle and to the west the clearing opens."
     forestsix = Place("forest four", None, None, None, None, None, player)
-    forestsix.blurb = "forest six."
+    forestsix.blurb = "The trees stretch far overhead. Among the leaves lies a sparkling gem."
     castle = Place(None, None, "forest five", None, None, None, player)
-    castle.blurb = "castle."
+    castle.blurb = "At the gates of the castle, a guard stops you and is about to turn you away when the queen appears."
     # dictionary of locations and objects
     locs = {"field" : field,
             "cave" : cave,
@@ -371,6 +423,7 @@ if __name__ == "__main__":
             "canyon" : canyon,
             "rainbow" : rainbow,
             "clearing two" : clearingtwo,
+            "troll forest" : trollforestfour,
             "forest four" : forestfour,
             "forest five" : forestfive,
             "forest six" : forestsix,
@@ -389,3 +442,7 @@ if __name__ == "__main__":
             player.change_location(locs[current].get_location(current, player.movement))
             if player.location == None: # if they go somewhere they can't
                 print("You stumble into an invisible wall and realize you can't go that way.")
+            if actions.game_over == True:
+                print("Having returned the crown to the grateful queen, your quest is complete."
+                      + '\n' + "Thank you for playing The Queen's Quest.")
+                break
