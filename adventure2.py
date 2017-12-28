@@ -32,35 +32,36 @@ class Place:
         elif movement == "stop": # part of the loop break mechanism
             return "stop"
         elif movement == 9:
-            if current == "forest path":
+            if current == "forest path": # if the player can't climb the tree
                 return "forest path"
-            elif current == "cave":
+            elif current == "cave": # when the player lights the torch
                 return "lit ledge"
-            elif current == "ledge":
+            elif current == "ledge": # when the player lights the torch
                 return "lit ledge"
-            elif current == "canyon":
+            elif current == "canyon": # if the player is magical
                 return "rainbow"
-            elif current == "clearing two":
+            elif current == "clearing two": # if the troll is dead
                 return "forest four"
-            elif current == "troll forest":
+            elif current == "troll forest": # if the troll is dead
                 return "forest four"
         elif movement == 0: # if you don't move
             return current
 
 class Inventory:
     def __init__(self):
-        self.have = []
+        self.have = [] # to put things in
         self.check = None
     def inventory_add(self, item):
         self.have.append(item)
-    def inventory_check(self, item):
+    def inventory_check(self, item): # used as test later
         if self.have.count(item) == 1 or self.have.count(item) > 1:
             self.check = True
 
 class Actions:
     def __init__(self):
         self.game_over = False
-        self.trolldead = False
+        self.trolldead = False # stored here because of abstraction barriers
+    # all the actions are pretty self explanatory
     def get_torch(self, current, inventory):
         print(current)
         if current == "cave":
@@ -166,7 +167,7 @@ class Actions:
     def read_scroll(self, current, inventory):
         inventory.inventory_check("scroll")
         if inventory.check == True:
-            print('\n' +
+            print('\n' + # this is just to make it look pretty onscreen
                   "PROCLAMATION" +
                   '\n' +
                   "BY ORDER OF THE QUEEN" +
@@ -182,7 +183,7 @@ class Actions:
         else:
             print("What scroll?")
     def drop_scroll(self, current, inventory):
-        inventory.inventory_check("scroll") # doesn't work?
+        inventory.inventory_check("scroll")
         if inventory.check == True:
             print("The scroll flutters to the ground.")
         else:
@@ -233,7 +234,7 @@ class Actions:
 class Player:
     def __init__(self, actions, current, inventory):
     # where they want to go and where they are
-    # object status also stored here
+    # object statuses also stored here
         self.movement = None
         self.location = None
         self.gateopen = False
@@ -279,7 +280,7 @@ class Player:
                 self.movement = self.moves[action]
                 if action == "go up":
                     if current == "forest path":
-                        if self.gateopen == True:
+                        if self.gateopen == True: # if the gate is open, climb the tree
                             self.movement = 5
                             break
                         else:
@@ -287,7 +288,7 @@ class Player:
                             self.movement = 9
                             break
                     elif current == "cave":
-                        if self.torchlit == True:
+                        if self.torchlit == True: # if the torch is lit, go to the lit ledge
                             self.movement = 9
                             break
                         else:
@@ -297,7 +298,7 @@ class Player:
                         break
                 elif action == "go west":
                     if current == "canyon":
-                        if self.magical == True:
+                        if self.magical == True: # if player is magical, go to the rainbow
                             self.movement = 9
                             break
                         else:
@@ -306,28 +307,28 @@ class Player:
                         break
                 elif action == "go south":
                     if current == "clearing two":
-                        if actions.trolldead == True:
+                        if actions.trolldead == True: # if the troll is dead, go to forest four
                             self.movement = 9
                             break
                         else:
                             self.movement = 3
                             break
                     elif current == "troll forest":
-                        if actions.trolldead == False:
+                        if actions.trolldead == False: # if the troll isn't dead, stay in troll forest
                             self.movement = 0
                     else:
                         break
                 else:
                     break
-            elif str(action) in self.action_list:
+            elif str(action) in self.action_list: # most actions are in action_list
                 self.action_list[action](current)
             elif str(action) == "light torch":
                 if current == "ledge":
-                    self.movement = 9
+                    self.movement = 9 # if torch is lit, go to lit ledge
                     break
                 else:
                     actions.light_torch(current, inventory)
-            elif str(action) == "xyzzy":
+            elif str(action) == "xyzzy": # because easter eggs
                 if current == "hill":
                     self.magical = True
                     print("You begin to glow faintly with a magical aura.")
@@ -336,7 +337,7 @@ class Player:
             elif str(action) == "hit troll":
                 if current == "troll forest":
                     actions.hit_troll(current, inventory)
-                    self.movement = 9
+                    self.movement = 9 # if the troll is dead, go to forest four
                     break
                 else:
                     print("What troll?")
@@ -437,11 +438,13 @@ if __name__ == "__main__":
         current = player.location # to store location
         player.location = None # to run while loop
         while player.location == None:
+            # ask the player what they want to do and run actions based on where they are and what they have
             player.action_input(current, actions, inventory)
+            # set the new location to where Place says based on where they are and where they want to move
             player.change_location(locs[current].get_location(current, player.movement))
             if player.location == None: # if they go somewhere they can't
                 print("You stumble into an invisible wall and realize you can't go that way.")
-            if actions.game_over == True:
+            if actions.game_over == True: # once the game is won, end the loop
                 print("Having returned the crown to the grateful queen, your quest is complete."
                       + '\n' + "Thank you for playing The Queen's Quest.")
                 break
