@@ -1,6 +1,5 @@
 # to do list
 # playtest more
-# fix troll hitting
 
 class Place:
     def __init__(self, locnorth, loceast, locsouth, locwest, locup, locdown, player):
