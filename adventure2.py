@@ -320,7 +320,7 @@ class Player:
                 else:
                     break
             elif str(action) in self.action_list: # most actions are in action_list
-                self.action_list[action](current, inventory)
+                self.action_list[action](current)
             elif str(action) == "light torch":
                 if current == "ledge":
                     self.movement = 9 # if torch is lit, go to lit ledge
