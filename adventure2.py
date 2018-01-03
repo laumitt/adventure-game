@@ -173,7 +173,7 @@ class Actions:
             print(" ")
             print("The Queen's crown has been stolen. Any hero who wishes to venture forth and return it to Her Majesty will receive a")
             print(" ")
-            print("§100,000")
+            print("$100,000")
             print(" ")
             print("REWARD")
             print(" ")
