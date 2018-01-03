@@ -177,8 +177,7 @@ class Actions:
                   '\n' +
                   "REWARD" +
                   '\n' +
-                  "and be named Knight of the Realm." +
-                  '\n')
+                  "and be named Knight of the Realm.")
         else:
             print("What scroll?")
     def drop_scroll(self, current, inventory):
