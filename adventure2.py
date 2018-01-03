@@ -63,7 +63,6 @@ class Actions:
         self.trolldead = False # stored here because of abstraction barriers
     # all the actions are pretty self explanatory
     def get_torch(self, current, inventory):
-        print(current)
         if current == "cave":
             inventory.inventory_add("torch")
             print("You gingerly pick up the torch and wonder how it got there.")
@@ -321,7 +320,7 @@ class Player:
                 else:
                     break
             elif str(action) in self.action_list: # most actions are in action_list
-                self.action_list[action](current)
+                self.action_list[action](current, inventory)
             elif str(action) == "light torch":
                 if current == "ledge":
                     self.movement = 9 # if torch is lit, go to lit ledge
