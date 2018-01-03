@@ -166,18 +166,19 @@ class Actions:
     def read_scroll(self, current, inventory):
         inventory.inventory_check("scroll")
         if inventory.check == True:
-            print('\n' + # this is just to make it look pretty onscreen
-                  "PROCLAMATION" +
-                  '\n' +
-                  "BY ORDER OF THE QUEEN" +
-                  '\n' + '\n' +
-                  "The Queen's crown has been stolen. Any hero who wishes to venture forth and return it to Her Majesty will receive a" +
-                  '\n' +
-                  "§100,000"
-                  '\n' +
-                  "REWARD" +
-                  '\n' +
-                  "and be named Knight of the Realm.")
+            print(" ") # this is just to make it look pretty onscreen
+            print("PROCLAMATION")
+            print(" ")
+            print("BY ORDER OF THE QUEEN")
+            print(" ")
+            print("The Queen's crown has been stolen. Any hero who wishes to venture forth and return it to Her Majesty will receive a")
+            print(" ")
+            print("§100,000")
+            print(" ")
+            print("REWARD")
+            print(" ")
+            print("and be named Knight of the Realm.")
+            print(" ")
         else:
             print("What scroll?")
     def drop_scroll(self, current, inventory):
