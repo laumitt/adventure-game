@@ -1,6 +1,3 @@
-# to do list
-# playtest more
-
 class Place:
     def __init__(self, locnorth, loceast, locsouth, locwest, locup, locdown, player):
     # so that each place can define its own surroundings but run off one class
@@ -17,20 +14,15 @@ class Place:
         print(self.blurb)
     def get_location(self, current, movement):
     # tell Player where they'd end up after moving a certain way
-        if movement == 1:
-            return self.NORTH
-        elif movement == 2:
-            return self.EAST
-        elif movement == 3:
-            return self.SOUTH
-        elif movement == 4:
-            return self.WEST
-        elif movement == 5:
-            return self.UP
-        elif movement == 6:
-            return self.DOWN
-        elif movement == "stop": # part of the loop break mechanism
-            return "stop"
+        movement_dict = {1 : self.NORTH,
+                         2 : self.EAST,
+                         3 : self.SOUTH,
+                         4 : self.WEST,
+                         5 : self.UP,
+                         6 : self.DOWN,
+                         "stop" : "stop"}
+        if movement in movement_dict:
+            return movement_dict[movement]
         elif movement == 9:
             if current == "forest path": # if the player can't climb the tree
                 return "forest path"
@@ -55,7 +47,9 @@ class Inventory:
         self.have.append(item)
     def inventory_check(self, item): # used as test later
         if self.have.count(item) == 1 or self.have.count(item) > 1:
-            self.check = True
+              return True
+        else:
+            return False
 
 class Actions:
     def __init__(self):
@@ -240,14 +234,13 @@ class Player:
         self.torchlit = False
         self.magical = False
         self.triedtroll = False
-        self.trolldead = True
         self.moves = {"go north" : 1,
                         "go east" : 2,
                         "go south" : 3,
                         "go west" : 4,
                         "go up" : 5,
                         "go down" : 6,
-                        "stop" : "stop"}
+                        "stop" : "stop"} # stop is part of loop breaker
         # dictionary of non-movement actions linked to methods in Actions
         # light torch, xyzzy, hit troll, and stop are special and different
         self.action_list = {"pick up torch" : lambda current:actions.get_torch(current, inventory),
