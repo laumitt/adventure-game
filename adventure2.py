@@ -21,21 +21,16 @@ class Place:
                          5 : self.UP,
                          6 : self.DOWN,
                          "stop" : "stop"}
+        special_moves = {"forest path" : "forest path", # can't climb tree
+                         "cave" : "lit ledge", # lit torch
+                         "ledge" : "lit ledge", # lit torch
+                         "canyon" : "rainbow", # magical player
+                         "clearing two" : "forest four", # dead troll
+                         "troll forest" : "forest four"} # dead troll
         if movement in movement_dict:
             return movement_dict[movement]
         elif movement == 9:
-            if current == "forest path": # if the player can't climb the tree
-                return "forest path"
-            elif current == "cave": # when the player lights the torch
-                return "lit ledge"
-            elif current == "ledge": # when the player lights the torch
-                return "lit ledge"
-            elif current == "canyon": # if the player is magical
-                return "rainbow"
-            elif current == "clearing two": # if the troll is dead
-                return "forest four"
-            elif current == "troll forest": # if the troll is dead
-                return "forest four"
+            return special_moves[current]
         elif movement == 0: # if you don't move
             return current
 
@@ -63,15 +58,13 @@ class Actions:
         else:
             print("What torch?")
     def light_torch(self, current, inventory):
-        inventory.inventory_check("torch") # doesn't work?
-        if inventory.check == True:
+        if inventory.inventory_check("torch") == True:
             print("The warm light of the torch flickers over your surroundings.")
             player.torchlit = True
         else:
             print("What torch?")
     def drop_torch(self, current, inventory):
-        inventory.inventory_check("torch")
-        if inventory.check == True:
+        if inventory.inventory_check("torch)") == True:
             print("The torch clatters to the ground.")
         else:
             print("What torch?")
@@ -82,14 +75,12 @@ class Actions:
         else:
             print("What rock?")
     def look_rock(self, current, inventory):
-        inventory.inventory_check("rock") # doesn't work?
-        if inventory.check == True:
+        if inventory.inventory_check("rock") == True:
             print("You look as hard as you can but can't see anything special about the rock.")
         else:
             print("What rock?")
     def drop_rock(self, current, inventory):
-        inventory.inventory_check("rock")
-        if inventory.check == True:
+        if inventory.inventory_check("rock") == True:
             print("The rock thuds to the ground.")
         else:
             print("What rock?")
@@ -105,15 +96,13 @@ class Actions:
         else:
             print("What key?")
     def drop_key(self, current, inventory):
-        inventory.inventory_check("key")
-        if inventory.check == True:
+        if inventory.inventory_check("key") == True:
             print("A bit of rust flutters off the key as it falls.")
         else:
             print("What key?")
     def unlock(self, current, inventory):
         if current == "forest path":
-            inventory.inventory_check("key")
-            if inventory.check == True:
+            if inventory.inventory_check("key") == True:
                 print("The gate swings open on rusty hinges, allowing you to climb the tree.")
                 player.gateopen = True
             else:
@@ -127,14 +116,12 @@ class Actions:
         else:
             print("What crown?")
     def drop_crown(self, current, inventory):
-        inventory.inventory_check("crown")
-        if inventory.check == True:
+        if inventory.inventory_check("crown") == True:
             print("The crown sparkles as it falls.")
         else:
             print("What crown?")
     def present_crown(self, current, inventory):
-        inventory.inventory_check("crown")
-        if inventory.check == True:
+        if inventory.inventory_check("crown") == True:
             print("The queen smiles and thanks you. Her guard offers you a pouch with your reward as she dubs you Knight of the Realm.")
             self.game_over = True
         else:
@@ -146,8 +133,7 @@ class Actions:
         else:
             print("What sword?")
     def drop_sword(self, current, inventory):
-        inventory.inventory_check("sword")
-        if inventory.check == True:
+        if inventory.inventory_check("sword") == True:
             print("The sword falls with a crash.")
         else:
             print("What sword?")
@@ -158,8 +144,7 @@ class Actions:
         else:
             print("What scroll?")
     def read_scroll(self, current, inventory):
-        inventory.inventory_check("scroll")
-        if inventory.check == True:
+        if inventory.inventory_check("scroll") == True:
             print(" ") # this is just to make it look pretty onscreen
             print("PROCLAMATION")
             print(" ")
@@ -176,14 +161,12 @@ class Actions:
         else:
             print("What scroll?")
     def drop_scroll(self, current, inventory):
-        inventory.inventory_check("scroll")
-        if inventory.check == True:
+        if inventory.inventory_check("scroll") == True:
             print("The scroll flutters to the ground.")
         else:
             print("What scroll?")
     def hit_troll(self, current, inventory):
-        inventory.inventory_check("sword")
-        if inventory.check == True:
+        if inventory.inventory_check("sword") == True:
             if self.trolldead == False:
                 print("The troll collapses on the side of the path.")
                 player.current = "forest four"
@@ -200,8 +183,7 @@ class Actions:
         else:
             print("What gem?")
     def drop_gem(self, current, inventory):
-        inventory.inventory_check("gem")
-        if inventory.check == True:
+        if inventory.inventory_check("gem") == True:
             print("The gem sparkles as it falls.")
         else:
             print("What gem?")
@@ -212,14 +194,12 @@ class Actions:
         else:
             print("What flowers?")
     def drop_flowers(self, current, inventory):
-        inventory.inventory_check("flowers")
-        if inventory.check == True:
+        if inventory.inventory_check("flowers") == True:
             print("The flowers fall.")
         else:
             print("What flowers?")
     def present_flowers(self, current, inventory):
-        inventory.inventory_check("flowers")
-        if inventory.check == True:
+        if inventory.inventory_check("flowers") == True:
             print("The queen smiles.")
         else:
             print("What flowers?")
