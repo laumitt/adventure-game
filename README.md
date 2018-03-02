@@ -1,6 +1,6 @@
 # The Queen's Quest
 
-The Queen's Quest is a fantasy-themed, text-based adventure game. The player inputs text commands to travel around a world, picking up and using items on a quest to find the queen's lost crown. This game was developed for Jen S.'s Object Oriented Programming class at The Nueva School, Fall 2017.
+The Queen's Quest is a fantasy-themed, text-based adventure game. The player inputs text commands to travel around a world, picking up and using items on a quest to find the queen's lost crown. This game was developed for Jen Selby's Object Oriented Programming class at The Nueva School, Fall 2017.
 
 ## Getting Started
 
