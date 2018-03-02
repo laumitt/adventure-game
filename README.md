@@ -6,13 +6,17 @@ The Queen's Quest is a fantasy-themed, text-based adventure game. The player inp
 
 This game is short and contained within one file (adventure2.py). The rest of the files in this repository document the development process of the game.
 
-### Prerequisites
+### Dependencies
 
-The Queen's Quest is written in Python 3.6.4.
+Python 3
 
-### Installation
+### Installation and Use
 
-To play The Queen's Quest, simply download the repository, open Terminal (or equivalent), and run adventure2.py in Python 3. If properly installed, on startup the program should print
+```
+python3 adventure2.py
+```
+
+On startup, the program should print
 
 ```
 Instructions:
@@ -21,11 +25,7 @@ Movement commands are go + north/south/east/west/up/down. All lowercase please. 
 You stand in a large field with a forest to the west, a river to the east, and a cave to the north. There is a bouquet of flowers lying at your feet.
 ```
 
-Commands are case sensitive and if the input is invalid, the program will print
-
-```
-You realize you are spouting gibberish into thin air.
-```
+Commands are case sensitive. Invalid inputs will result in an error.
 
 An example of valid movement
 
@@ -52,11 +52,7 @@ light torch
 The warm light of the torch flickers over your surroundings.
 ```
 
-If the command is a valid command (for example, light torch) but not executable at the time (the player has not picked up the torch), the program will ask
-
-```
-What torch?
-```
+If the command is a valid command (for example, light torch) but not executable at the time (the player has not picked up the torch), the program will return an error in the form of a question (What torch?).
 
 To exit the program at any time, input
 
